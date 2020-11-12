@@ -8,23 +8,13 @@ type Token struct {
 }
 
 const (
-	TokenEOF TokenType = iota
-	TokenInner
-	TokenTag
-	TokenTyp
-	TokenPartnerId
-	TokenPointsPbp
-	TokenAmountPbp
+	TokenEOF      TokenType = iota
+	TokenInner              // inner text
+	TokenTagStart           // some tag
+	TokenTagEnd             // some tag
 )
 
 const EOF = -1
-
-var key = map[TokenType][]byte{
-	TokenTyp:          []byte("<type>"),
-	TokenPartnerId:    []byte("<partnerId>"),
-	TokenPointsPbp:    []byte("<points_pbp>"),
-	TokenAmountPbp:    []byte("<amount_pbp>"),
-}
 
 const (
 	leftTeg  = "<"

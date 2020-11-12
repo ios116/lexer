@@ -62,11 +62,11 @@ func lexTag(l *lexer) stateFn {
 			return nil
 		}
 		switch {
-		case bytes.HasPrefix(l.input[l.pos:], key[TokenTyp]):
+		case bytes.HasPrefix(l.input[l.pos:], []byte(leftTeg)):
 			l.start=l.pos
-			l.pos = l.start + len(key[TokenTyp])
-			l.emit(TokenTyp)
-			return lexInner
+			l.pos = l.start + len(leftTeg)
+		    l.ignore()
+			return lexTags
 		case bytes.HasPrefix(l.input[l.pos:], key[TokenPartnerId]):
 			l.start=l.pos
 			l.pos = l.start + len(key[TokenPartnerId])
@@ -77,6 +77,24 @@ func lexTag(l *lexer) stateFn {
 		}
 	}
 }
+
+
+func lexTags(l *lexer) stateFn  {
+	for {
+		switch  {
+		case bytes.HasPrefix(l.input[l.pos:],[]byte(rightTeg)):
+			l.emit(TokenInner)
+			return nil
+		default:
+			r := l.next()
+			if r == EOF {
+				l.emit(TokenEOF)
+				return nil
+			}
+		}
+	}
+}
+
 
 func lexInner(l *lexer) stateFn  {
 	for {
