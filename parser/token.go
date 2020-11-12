@@ -10,6 +10,7 @@ type Token struct {
 const (
 	TokenEOF TokenType = iota
 	TokenInner
+	TokenTag
 	TokenTyp
 	TokenPartnerId
 	TokenPointsPbp
