@@ -43,16 +43,16 @@ func (l *lexer) run() {
 }
 
 // lexLeft scans until an opening action delimiter, "<".
-func lexLeft(l *lexer) stateFn {
-	if bytes.HasPrefix(l.input[l.pos:], []byte(leftTeg)) {
-		l.ignore()
-		return lexTag // Next state.
-	}
-	if l.next() == EOF {
-		l.emit(TokenEOF)
-	}
-	return nil // Stop the run loop.
-}
+//func lexLeft(l *lexer) stateFn {
+//	if bytes.HasPrefix(l.input[l.pos:], []byte(leftTeg)) {
+//		l.ignore()
+//		return lexTag // Next state.
+//	}
+//	if l.next() == EOF {
+//		l.emit(TokenEOF)
+//	}
+//	return nil // Stop the run loop.
+//}
 
 func lexTag(l *lexer) stateFn {
 	for {
@@ -83,7 +83,7 @@ func lexInner(l *lexer) stateFn  {
 		switch  {
 		case bytes.HasPrefix(l.input[l.pos:],[]byte(leftTeg)):
 			l.emit(TokenInner)
-			return nil
+			return lexTag
 		default:
 			r := l.next()
 			if r == EOF {
