@@ -8,16 +8,16 @@ type Token struct {
 }
 
 const (
-	TokenEOF      TokenType = iota
-	TokenInner              // inner text
-	TokenTagStart           // some tag
-	TokenTagEnd             // some tag
+	TokenEOF     TokenType = iota
+	CharData               // inner text
+	StartElement           // some tag
+	EndElement             // some tag
 )
 
 const EOF = -1
 
 const (
-	leftTeg  = "<"
-	rightTeg = ">"
-	endTeg   = "/>"
+	openTag  = "<"
+	closeTeg = ">"
+	endTeg   = "</"
 )

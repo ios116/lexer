@@ -30,17 +30,15 @@ func GetFieldByNameFromXML(b []byte, name string) (trTyp string) {
 }
 
 func TestLex(t *testing.T) {
-	b, err :=ioutil.ReadFile("../fixtures/request_R.xml")
+	b, err :=ioutil.ReadFile("../fixtures/request_B.xml")
 	if err != nil {
 		t.Fatal(err)
 	}
 	_, items := Lex("mylexer", b)
-	elements := make(map[string][]byte)
 	for res := range items {
-	   fmt.Println(string(res.Value))
+	   fmt.Println("value=",string(res.Value),"kind=",res.Kind,"===")
 
 	}
-	fmt.Println(string(elements["type"]))
 }
 
 func TestOld(t *testing.T) {
@@ -82,7 +80,7 @@ func BenchmarkLex(b *testing.B) {
 			_, items := Lex("mylexer", bts)
 			elements := make(map[string][]byte)
 			for res := range items {
-				if res.Kind == TokenTyp {
+				if res.Kind == EndElement {
 					elements["type"] = res.Value
 				}
 			}

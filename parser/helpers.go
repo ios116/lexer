@@ -7,15 +7,15 @@ import (
 
 // next returns the next rune in the input.
 func (l *lexer) next() rune {
-	if l.pos >= len(l.input) {
-		l.width = 0
-		return EOF
-	}
 	r, s := utf8.DecodeRune(l.input[l.pos:])
 	l.width = s
 	l.pos += l.width
 	if r == '\n' {
 		l.line++
+	}
+	if l.pos >= len(l.input) {
+		l.width = 0
+		return EOF
 	}
 	return r
 }

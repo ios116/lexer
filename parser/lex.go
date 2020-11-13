@@ -2,6 +2,7 @@ package parser
 
 import (
 	"bytes"
+	"fmt"
 )
 
 type stateFn func(*lexer) stateFn
@@ -36,55 +37,43 @@ func Lex(name string, input []byte) (*lexer, chan Token) {
 // run lexes the input by executing state functions until
 // the state is nil.
 func (l *lexer) run() {
-	for state := lexTag; state != nil; {
+	fmt.Println("total=",len(l.input))
+	for state := Processor; state != nil; {
 		state = state(l)
 	}
 	close(l.items) // No more tokens will be delivered.
 }
 
-// lexLeft scans until an opening action delimiter, "<".
-func lexLeft(l *lexer) stateFn {
-	if bytes.HasPrefix(l.input[l.pos:], []byte(leftTeg)) {
-		l.ignore()
-		return lexTag // Next state.
-	}
-	if l.next() == EOF {
-		l.emit(TokenEOF)
-	}
-	return nil // Stop the run loop.
+func Processor(l *lexer) stateFn {
+		switch {
+		case bytes.HasPrefix(l.input[l.pos:],[]bytes(openTag)):
+			l.next()
+			l.ignore()
+			return lexTag
+
+		//case l.input[l.pos] == closeTeg:
+		//	l.next()
+		//	l.ignore()
+		//	return lexInner
+		default:
+			r := l.next()
+			if r == EOF {
+				l.emit(TokenEOF)
+				return nil
+			}
+			//fmt.Println("state=", l.pos, string(l.input[l.pos]))
+			return Processor
+		}
 }
 
 func lexTag(l *lexer) stateFn {
 	for {
-		r := l.next()
-		if r == EOF {
-			l.emit(TokenEOF)
-			return nil
-		}
 		switch {
-		case bytes.HasPrefix(l.input[l.pos:], []byte(leftTeg)):
-			l.start=l.pos
-			l.pos = l.start + len(leftTeg)
-		    l.ignore()
-			return lexTags
-		case bytes.HasPrefix(l.input[l.pos:], key[TokenPartnerId]):
-			l.start=l.pos
-			l.pos = l.start + len(key[TokenPartnerId])
-			l.emit(TokenPartnerId)
-			return lexInner
-		default:
+		case l.input[l.pos]== closeTeg:
+			l.emit(StartElement)
+			l.next()
 			l.ignore()
-		}
-	}
-}
-
-
-func lexTags(l *lexer) stateFn  {
-	for {
-		switch  {
-		case bytes.HasPrefix(l.input[l.pos:],[]byte(rightTeg)):
-			l.emit(TokenInner)
-			return nil
+			return Processor
 		default:
 			r := l.next()
 			if r == EOF {
@@ -96,12 +85,14 @@ func lexTags(l *lexer) stateFn  {
 }
 
 
-func lexInner(l *lexer) stateFn  {
+func lexInner(l *lexer) stateFn {
 	for {
-		switch  {
-		case bytes.HasPrefix(l.input[l.pos:],[]byte(leftTeg)):
-			l.emit(TokenInner)
-			return nil
+
+		switch {
+ 		case l.input[l.pos] == openTag:
+			l.emit(CharData)
+			l.next()
+			return Processor
 		default:
 			r := l.next()
 			if r == EOF {
