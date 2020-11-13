@@ -37,8 +37,10 @@ func TestLex(t *testing.T) {
 	_, items := Lex("mylexer", b)
 	elements := make(map[string][]byte)
 	for res := range items {
-	   fmt.Println(string(res.Value))
-
+		if res.Kind == TokenPayment {
+			fmt.Println("=========")
+		}
+	   fmt.Println(string(res.Value),res.Kind)
 	}
 	fmt.Println(string(elements["type"]))
 }
