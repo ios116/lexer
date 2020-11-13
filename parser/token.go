@@ -9,8 +9,8 @@ type Token struct {
 
 const (
 	TokenEOF     TokenType = iota
-	CharData               // inner text
 	StartElement           // some tag
+	CharData               // inner text
 	EndElement             // some tag
 )
 
