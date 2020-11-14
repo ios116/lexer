@@ -53,42 +53,73 @@ func TestOld(t *testing.T) {
 }
 
 
-func BenchmarkOld(b *testing.B) {
-	bts, err :=ioutil.ReadFile("../fixtures/request_R.xml")
-	if err != nil {
-		b.Fatal(err)
+//func BenchmarkOld(b *testing.B) {
+//	bts, err :=ioutil.ReadFile("../fixtures/request_R.xml")
+//	if err != nil {
+//		b.Fatal(err)
+//	}
+//	b.ResetTimer()
+//	b.RunParallel(func(pb *testing.PB) {
+//		for pb.Next() {
+//			elements := make(map[string]interface{})
+//			str:=GetFieldByNameFromXML(bts,"type")
+//			elements["type"]=str
+//		}
+//	})
+//
+//}
+//
+//func BenchmarkLex(b *testing.B) {
+//	bts, err :=ioutil.ReadFile("../fixtures/request_R.xml")
+//	if err != nil {
+//		b.Fatal(err)
+//	}
+//	b.ResetTimer()
+//	b.RunParallel(func(pb *testing.PB) {
+//		for pb.Next() {
+//			_, items := Lex("mylexer", bts)
+//			elements := make(map[string][]byte)
+//			for res := range items {
+//				if res.Kind == EndElement {
+//					elements["type"] = res.Value
+//				}
+//			}
+//
+//		}
+//	})
+//}
+
+func TestProcessor(t *testing.T) {
+
+	str:=[]byte("hello")
+	st:=bytes.HasPrefix(str[1:],[]byte("el"))
+	t.Log(st)
+
+	if str[1] == 'e' && str[2] == 'l' {
+	  t.Log("YES")
 	}
+}
+
+func BenchmarkLex2(b *testing.B) {
+	str:=[]byte("hello")
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			elements := make(map[string]interface{})
-			str:=GetFieldByNameFromXML(bts,"type")
-			elements["type"]=str
+		   bytes.HasPrefix(str[1:],[]byte("el"))
 		}
 	})
 
 }
 
-func BenchmarkLex(b *testing.B) {
-	bts, err :=ioutil.ReadFile("../fixtures/request_R.xml")
-	if err != nil {
-		b.Fatal(err)
-	}
+func BenchmarkLex3(b *testing.B) {
+	str:=[]byte("hello")
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			_, items := Lex("mylexer", bts)
-			elements := make(map[string][]byte)
-			for res := range items {
-				if res.Kind == EndElement {
-					elements["type"] = res.Value
-				}
-			}
+			if str[1] == 'e' && str[2] == 'l' {
 
+			}
 		}
 	})
-
-
-
 
 }

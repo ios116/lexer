@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"bytes"
 	"fmt"
 )
 
@@ -46,18 +45,15 @@ func (l *lexer) run() {
 
 func Processor(l *lexer) stateFn {
 	switch {
-	case bytes.HasPrefix(l.input[l.pos:], []byte(endTeg)):
-		l.next()
-		l.next()
+	case l.input[l.pos] == openTag && l.input[l.pos+1] == slash:
+		l.pos +=2
 		l.ignore()
 		return lexTagEnd
 
-	case bytes.HasPrefix(l.input[l.pos:], []byte(openTag)):
+	case l.input[l.pos]== openTag:
 		l.next()
 		l.ignore()
 		return lexTagStart
-
-
 
 	default:
 		r := l.next()
@@ -74,7 +70,7 @@ func Processor(l *lexer) stateFn {
 func lexTagEnd(l *lexer) stateFn {
 	for {
 		switch {
-		case bytes.HasPrefix(l.input[l.pos:], []byte(closeTeg)):
+		case l.input[l.pos] == closeTeg:
 			l.emit(EndElement)
 			return Processor
 		default:
@@ -91,7 +87,7 @@ func lexTagEnd(l *lexer) stateFn {
 func lexTagStart(l *lexer) stateFn {
 	for {
 		switch {
-		case bytes.HasPrefix(l.input[l.pos:], []byte(closeTeg)):
+		case l.input[l.pos] == closeTeg:
 			l.emit(StartElement)
 			l.next()
 			l.ignore()
@@ -110,14 +106,13 @@ func lexTagStart(l *lexer) stateFn {
 func lexInner(l *lexer) stateFn {
 	for {
 		switch {
-		case bytes.HasPrefix(l.input[l.pos:], []byte(endTeg)):
+		case l.input[l.pos] == openTag && l.input[l.pos+1] == slash:
 			l.emit(CharData)
-			l.next()
-			l.next()
+			l.pos +=2
 			l.ignore()
 			return lexTagEnd
-		// если следующий тег
-		case bytes.HasPrefix(l.input[l.pos:], []byte(openTag)):
+		// если следующий тег а не
+		case l.input[l.pos] == openTag:
 			l.next()
 			l.ignore()
 			return lexTagStart
