@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"strings"
+	"bytes"
 	"unicode/utf8"
 )
 
@@ -42,8 +42,8 @@ func (l *lexer) ignore() {
 }
 
 // accept consumes the next rune if it's from the valid set.
-func (l *lexer) accept(valid string) bool {
-	if strings.ContainsRune(valid, l.next()) {
+func (l *lexer) accept(b []byte) bool {
+	if bytes.ContainsRune(b,l.next()) {
 		return true
 	}
 	l.backup()

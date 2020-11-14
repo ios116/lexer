@@ -70,7 +70,7 @@ func lexTagEnd(l *lexer) stateFn {
 			l.emit(EndElement)
 			l.next()
 			l.ignore()
-			return Processor
+			return lexInner
 
 		default:
 			r := l.next()
@@ -107,9 +107,9 @@ func lexInner(l *lexer) stateFn {
 	for {
 
 		switch {
-		case l.input[l.pos] == '\n':
-			l.next()
-			l.ignore()
+		//case l.input[l.pos] == '\n':
+		//	l.next()
+		//	l.ignore()
 		case bytes.HasPrefix(l.input[l.pos:],[]byte(endTeg)):
 			l.emit(CharData)
 			l.next()
