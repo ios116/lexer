@@ -36,7 +36,7 @@ func TestLex(t *testing.T) {
 	}
 	_, items := Lex("mylexer", b)
 	for res := range items {
-	   fmt.Println("value=",string(res.Value),"kind=",res.Kind,"===")
+	   fmt.Println(string(res.Value),res.Kind)
 
 	}
 }

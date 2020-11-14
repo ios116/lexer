@@ -37,7 +37,7 @@ func Lex(name string, input []byte) (*lexer, chan Token) {
 // run lexes the input by executing state functions until
 // the state is nil.
 func (l *lexer) run() {
-	fmt.Println("total=",len(l.input))
+	fmt.Println("total=", len(l.input))
 	for state := Processor; state != nil; {
 		state = state(l)
 	}
@@ -45,32 +45,40 @@ func (l *lexer) run() {
 }
 
 func Processor(l *lexer) stateFn {
-		switch {
+	switch {
 
-		case bytes.HasPrefix(l.input[l.pos:],[]byte(openTag)):
-			l.next()
+	case bytes.HasPrefix(l.input[l.pos:], []byte(endTeg)):
+		l.next()
+		l.next()
+		l.ignore()
+		return lexTagEnd
+
+	case bytes.HasPrefix(l.input[l.pos:], []byte(openTag)):
+		l.next()
+		l.ignore()
+		return lexTagStart
+
+
+	default:
+		r := l.next()
+		if r == EOF {
 			l.ignore()
-			return lexTagStart
-		default:
-			r := l.next()
-			if r == EOF {
-				l.ignore()
-				l.emit(TokenEOF)
-				return nil
-			}
-			//fmt.Println("state=", l.pos, string(l.input[l.pos]))
-			return Processor
+			l.emit(TokenEOF)
+			return nil
 		}
+		//fmt.Println("state=", l.pos, string(l.input[l.pos]))
+		return Processor
+	}
 }
 
 func lexTagEnd(l *lexer) stateFn {
 	for {
 		switch {
-		case bytes.HasPrefix(l.input[l.pos:],[]byte(closeTeg)):
+		case bytes.HasPrefix(l.input[l.pos:], []byte(closeTeg)):
 			l.emit(EndElement)
 			l.next()
 			l.ignore()
-			return lexInner
+			return Processor
 
 		default:
 			r := l.next()
@@ -86,11 +94,11 @@ func lexTagEnd(l *lexer) stateFn {
 func lexTagStart(l *lexer) stateFn {
 	for {
 		switch {
-		case bytes.HasPrefix(l.input[l.pos:],[]byte(closeTeg)):
+		case bytes.HasPrefix(l.input[l.pos:], []byte(closeTeg)):
 			l.emit(StartElement)
 			l.next()
 			l.ignore()
-			return lexInner
+			return Processor
 		default:
 			r := l.next()
 			if r == EOF {
@@ -102,20 +110,12 @@ func lexTagStart(l *lexer) stateFn {
 	}
 }
 
-
 func lexInner(l *lexer) stateFn {
 	for {
-
 		switch {
-		//case l.input[l.pos] == '\n':
-		//	l.next()
-		//	l.ignore()
-		case bytes.HasPrefix(l.input[l.pos:],[]byte(endTeg)):
+		case bytes.HasPrefix(l.input[l.pos:], []byte(endTeg)):
 			l.emit(CharData)
-			l.next()
-			l.next()
-			l.ignore()
-			return lexTagEnd
+			return Processor
 		default:
 			r := l.next()
 			if r == EOF {
