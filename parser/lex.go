@@ -47,17 +47,10 @@ func (l *lexer) run() {
 func Processor(l *lexer) stateFn {
 	switch {
 
-	case bytes.HasPrefix(l.input[l.pos:], []byte(endTeg)):
-		l.next()
-		l.next()
-		l.ignore()
-		return lexTagEnd
-
 	case bytes.HasPrefix(l.input[l.pos:], []byte(openTag)):
 		l.next()
 		l.ignore()
 		return lexTagStart
-
 
 	default:
 		r := l.next()
@@ -98,7 +91,7 @@ func lexTagStart(l *lexer) stateFn {
 			l.emit(StartElement)
 			l.next()
 			l.ignore()
-			return Processor
+			return lexInner
 		default:
 			r := l.next()
 			if r == EOF {
@@ -115,10 +108,20 @@ func lexInner(l *lexer) stateFn {
 		switch {
 		case bytes.HasPrefix(l.input[l.pos:], []byte(endTeg)):
 			l.emit(CharData)
-			return Processor
+			l.next()
+			l.next()
+			l.ignore()
+			return lexTagEnd
+		// если следующий тег
+		case bytes.HasPrefix(l.input[l.pos:], []byte(openTag)):
+			l.next()
+			l.ignore()
+			return lexTagStart
+
 		default:
 			r := l.next()
 			if r == EOF {
+				l.ignore()
 				l.emit(TokenEOF)
 				return nil
 			}
