@@ -72,6 +72,16 @@ func lexTag(l *lexer) stateFn {
 			l.pos = l.start + len(key[TokenPartnerId])
 			l.emit(TokenPartnerId)
 			return lexInner
+		case bytes.HasPrefix(l.input[l.pos:], key[TokenPointsPbp]):
+			l.start=l.pos
+			l.pos = l.start + len(key[TokenPointsPbp])
+			l.emit(TokenPointsPbp)
+			return lexInner
+		case bytes.HasPrefix(l.input[l.pos:], key[TokenCard]):
+			l.start=l.pos
+			l.pos = l.start + len(key[TokenCard])
+			l.emit(TokenCard)
+			return lexInner
 		default:
 			l.ignore()
 		}
