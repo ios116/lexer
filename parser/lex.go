@@ -1,7 +1,5 @@
 package parser
 
-import "sync"
-
 type stateFn func(*lexer) stateFn
 
 // lexer holds the state of the scanner.
@@ -20,26 +18,11 @@ func (l *lexer) emit(t TokenType) {
 	l.start = l.pos
 }
 
-var pool = sync.Pool{
-	New: func() interface{} {
-	    l:=new(lexer)
-	    l.items =make(chan Token)
-		return l
-	},
-}
-
-func (l *lexer) reset()  {
-	l.pos=0
-	l.input=nil
-	l.start = 0
-	l.pos = 0
-	l.width = 0
-	l.line = 0
-}
-
 func Lex(input []byte) (*lexer, chan Token) {
-    l:=pool.Get().(*lexer)
-    l.input = input
+	l := &lexer{
+		input: input,
+		items: make(chan Token),
+	}
 	go l.run() // Concurrently run state machine.
 	return l, l.items
 }
@@ -50,9 +33,7 @@ func (l *lexer) run() {
 	for state := Processor; state != nil; {
 		state = state(l)
 	}
-	l.reset()
-	pool.Put(l)
-	//close(l.items) // No more tokens will be delivered.
+	close(l.items) // No more tokens will be delivered.
 }
 
 func Processor(l *lexer) stateFn {
