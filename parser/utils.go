@@ -26,7 +26,7 @@ func GetFieldByNameFromXML(b []byte, name string) (trTyp string) {
 	return trTyp
 }
 
-func GetNewXml(b []byte, name string) (result []byte) {
+func GetNewXml(b []byte, name []byte) (result []byte) {
 	_, items := Lex("myLexer", b)
 	inType := false
 	for res := range items {
@@ -35,7 +35,7 @@ func GetNewXml(b []byte, name string) (result []byte) {
 		}
 		switch {
 		case res.Kind == StartElement:
-			if string(res.Value) == name {
+			if 0 == bytes.Compare(res.Value, name) {
 				inType = true
 			}
 		case res.Kind == CharData:

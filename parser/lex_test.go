@@ -22,7 +22,7 @@ func TestLex2(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	res := GetNewXml(b, "type")
+	res := GetNewXml(b, []byte("type"))
 	fmt.Println(string(res))
 }
 
@@ -62,8 +62,8 @@ func BenchmarkLex(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
 			elements := make(map[string]interface{})
-			res:=GetNewXml(bts, "type")
-			elements["ype"] = res
+			res:=GetNewXml(bts, []byte("type"))
+			elements["type"] = res
 		}
 	})
 }
