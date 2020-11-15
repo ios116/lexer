@@ -18,6 +18,7 @@ func GetFieldByNameFromXML(b []byte, name string) (trTyp string) {
 			inType = se.Name.Local == name
 		case xml.CharData:
 			if inType {
+				inType= false
 				return string(se)
 			}
 		}
@@ -26,7 +27,7 @@ func GetFieldByNameFromXML(b []byte, name string) (trTyp string) {
 	return trTyp
 }
 
-func GetNewXml(b []byte, name []byte) (result []byte) {
+func GetNewXml(b []byte, name []byte) []byte {
 	_, items := Lex(b)
 	inType := false
 	for res := range items {
@@ -44,6 +45,5 @@ func GetNewXml(b []byte, name []byte) (result []byte) {
 			}
 		}
 	}
-	return result
-
+	return nil
 }
