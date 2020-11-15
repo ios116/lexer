@@ -1,9 +1,5 @@
 package parser
 
-import (
-	"fmt"
-)
-
 type stateFn func(*lexer) stateFn
 
 // lexer holds the state of the scanner.
@@ -36,7 +32,6 @@ func Lex(name string, input []byte) (*lexer, chan Token) {
 // run lexes the input by executing state functions until
 // the state is nil.
 func (l *lexer) run() {
-	fmt.Println("total=", len(l.input))
 	for state := Processor; state != nil; {
 		state = state(l)
 	}
