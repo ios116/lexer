@@ -93,6 +93,9 @@ func BenchmarkOld(b *testing.B) {
 		for pb.Next() {
 			elements := make(map[string]interface{})
 			str := GetFieldByNameFromXML(bts, "ip_cash_desk")
+			if "10.152.152.79" != str {
+				b.Fatal("errrrrrrr")
+			}
 			elements["type"] = str
 		}
 	})
