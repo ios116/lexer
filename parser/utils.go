@@ -27,7 +27,7 @@ func GetFieldByNameFromXML(b []byte, name string) (trTyp string) {
 }
 
 func GetNewXml(b []byte, name []byte) (result []byte) {
-	_, items := Lex("myLexer", b)
+	_, items := Lex(b)
 	inType := false
 	for res := range items {
 		if res.Kind == TokenEOF {
