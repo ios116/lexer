@@ -39,11 +39,11 @@ func (l *lexer) run() {
 func Processor(l *lexer) stateFn {
 	switch {
 	case l.input[l.pos] == openTag && l.input[l.pos+1] == slash:
-		l.pos +=2
+		l.pos += 2
 		l.ignore()
 		return lexTagEnd
 
-	case l.input[l.pos]== openTag:
+	case l.input[l.pos] == openTag:
 		l.next()
 		l.ignore()
 		return lexTagStart
@@ -55,7 +55,7 @@ func Processor(l *lexer) stateFn {
 			l.emit(TokenEOF)
 			return nil
 		}
-		//fmt.Println("state=", l.pos, string(l.input[l.pos]))
+		// fmt.Println("state=", l.pos, string(l.input[l.pos]))
 		return Processor
 	}
 }
@@ -101,7 +101,7 @@ func lexInner(l *lexer) stateFn {
 		switch {
 		case l.input[l.pos] == openTag && l.input[l.pos+1] == slash:
 			l.emit(CharData)
-			l.pos +=2
+			l.pos += 2
 			l.ignore()
 			return lexTagEnd
 		// если следующий тег а не

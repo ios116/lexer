@@ -19,5 +19,5 @@ const EOF = -1
 const (
 	openTag  = '<'
 	closeTeg = '>'
-	slash   = '/'
+	slash    = '/'
 )

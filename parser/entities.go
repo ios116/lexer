@@ -1,4 +1,5 @@
 package parser
+
 //easyjson:skip
 type DiscountRequestXMLEnvelope struct {
 	Data DiscountRequestXML `xml:"Body>ProcessTransaction>RequestData"`
@@ -19,7 +20,10 @@ type DiscountRequestXML struct {
 	Amount          float64 `xml:"amount"`
 	AmountPbp       string  `xml:"amount_pbp"`
 	PointsPbp       string  `xml:"points_pbp"`
-	Products        struct {
+	Payment         struct {
+		Item []Payment `xml:"item"`
+	} `xml:"payment"`
+	Products struct {
 		Text string                `xml:",chardata"`
 		Item []DiscountRequestItem `xml:"item"`
 	} `xml:"products"`
@@ -46,4 +50,9 @@ type Product struct {
 	ParentCode  string   `json:"category_id"`
 	Segments    []string `json:"product_segment_id"`
 	Categories  []string `json:"categories"`
+}
+
+type Payment struct {
+	Type   string `xml:"type"`
+	Amount int    `xml:"amount"`
 }

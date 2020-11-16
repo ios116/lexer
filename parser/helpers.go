@@ -43,7 +43,7 @@ func (l *lexer) ignore() {
 
 // accept consumes the next rune if it's from the valid set.
 func (l *lexer) accept(b []byte) bool {
-	if bytes.ContainsRune(b,l.next()) {
+	if bytes.ContainsRune(b, l.next()) {
 		return true
 	}
 	l.backup()

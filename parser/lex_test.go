@@ -2,9 +2,11 @@ package parser
 
 import (
 	"encoding/xml"
-	"github.com/stretchr/testify/assert"
+	"fmt"
 	"io/ioutil"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLexer(t *testing.T) {
@@ -13,11 +15,16 @@ func TestLexer(t *testing.T) {
 		t.Fatal(err)
 	}
 	resp, err := RequestMock(bts)
+
+	fmt.Printf("%+v", resp.Data.Payment)
 	assert.NoError(t, err)
 	assert.Equal(t, "R", resp.Data.Type)
 	assert.Equal(t, "1", resp.Data.ReceiptID)
 	assert.Equal(t, float64(200), resp.Data.Amount)
 	assert.Equal(t, "1", resp.Data.AmountPbp)
+	assert.Equal(t, "880", resp.Data.PointsPbp)
+	assert.Equal(t, "NQ", resp.Data.PosVersion)
+	assert.Equal(t, "10.152.152.79", resp.Data.IpCashDesk)
 }
 
 func BenchmarkLexer(b *testing.B) {

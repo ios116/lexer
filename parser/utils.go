@@ -19,7 +19,7 @@ func GetFieldByNameFromXML(b []byte, name string) (trTyp string) {
 			inType = se.Name.Local == name
 		case xml.CharData:
 			if inType {
-				//inType= false
+				// inType= false
 				return string(se)
 			}
 		}
@@ -42,7 +42,7 @@ func GetNewXml(b []byte, name []byte) []byte {
 			}
 		case res.Kind == CharData:
 			if inType {
-				//inType= false
+				// inType= false
 				return res.Value
 			}
 		}
@@ -54,6 +54,9 @@ func GetNewXml(b []byte, name []byte) []byte {
 func RequestMock(b []byte) (*DiscountRequestXMLEnvelope, error) {
 	request := &DiscountRequestXMLEnvelope{}
 	_, items := Lex(b)
+	payments := make([]Payment, 2)
+
+	paymentCounter := -1
 	status := map[string]bool{}
 	for res := range items {
 		if res.Kind == TokenEOF {
@@ -62,87 +65,63 @@ func RequestMock(b []byte) (*DiscountRequestXMLEnvelope, error) {
 		switch {
 		case res.Kind == StartElement:
 			switch string(res.Value) {
-			case "type":
-				status["type"] = true
-			case "partnerId":
-				status["partnerId"] = true
-			case "locationCode":
-				status["locationCode"] = true
-			case "terminalCode":
-				status["terminalCode"] = true
-			case "transactionDate":
-				status["transactionDate"] = true
-			case "receiptId":
-				status["receiptId"] = true
-			case "cardno":
-				status["cardno"] = true
-			case "online":
-				status["online"] = true
-			case "amount":
-				status["amount"] = true
-			case "amount_pbp":
-				status["amount_pbp"] = true
-			case "points_pbp":
-				status["points_pbp"] = true
-			case "payment":
-				status["payment"] = true
-			case "pos_version":
-				status["pos_version"] = true
-			case "ip_cash_desk":
-				status["ip_cash_desk"] = true
-			case "products":
-				status["products"] = true
+			case "item":
+				if status["payment"] {
+					paymentCounter += 1
+				}
+				status["item"] = true
+			default:
+				status[string(res.Value)] = true
 			}
+		case res.Kind == EndElement:
+			status[string(res.Value)] = false
 
 		case res.Kind == CharData:
 			switch {
 			case status["type"] && !status["payment"]:
-				status["type"] = false
 				request.Data.Type = string(res.Value)
 			case status["partnerId"]:
-				status["partnerId"] = false
 				request.Data.PartnerId = string(res.Value)
 			case status["locationCode"]:
-				status["locationCode"] = false
 				request.Data.LocationCode = string(res.Value)
 			case status["terminalCode"]:
-				status["terminalCode"] = false
 				request.Data.TerminalCode = string(res.Value)
 			case status["transactionDate"]:
-				status["transactionDate"] = false
 				request.Data.TransactionDate = string(res.Value)
 			case status["receiptId"]:
-				status["receiptId"] = false
 				request.Data.ReceiptID = string(res.Value)
 			case status["cardno"]:
-				status["cardno"] = false
 				request.Data.Cardno = string(res.Value)
 			case status["online"]:
-				status["online"] = false
 				request.Data.Online = string(res.Value)
-			case status["amount_pbp"]:
-				status["amount_pbp"] = false
-				request.Data.AmountPbp = string(res.Value)
-			case status["points_pbp"]:
-				status["points_pbp"] = false
-				request.Data.PointsPbp = string(res.Value)
-			case status["pos_version"]:
-				status["pos_version"] = false
-				request.Data.PosVersion = string(res.Value)
-			case status["ip_cash_desk"]:
-				status["ip_cash_desk"] = false
-				request.Data.IpCashDesk = string(res.Value)
-			case status["amount"] && !status["payment"]:
-				status["amount"] = false
+			case status["amount"] && !status["payment"] && !status["products"]:
 				n, err := strconv.ParseFloat(string(res.Value), 64)
 				if err != nil {
 					return nil, err
 				}
 				request.Data.Amount = n
 
+			case status["payment"] && status["item"] && status["type"]:
+				payments[paymentCounter].Type = string(res.Value)
+
+			case status["payment"] && status["item"] && status["amount"]:
+				n, err := strconv.Atoi(string(res.Value))
+				if err != nil {
+					return nil, err
+				}
+				payments[paymentCounter].Amount = n
+			case status["amount_pbp"]:
+				request.Data.AmountPbp = string(res.Value)
+			case status["points_pbp"]:
+				request.Data.PointsPbp = string(res.Value)
+			case status["pos_version"]:
+				request.Data.PosVersion = string(res.Value)
+			case status["ip_cash_desk"]:
+				request.Data.IpCashDesk = string(res.Value)
 			}
 		}
 	}
+	request.Data.Payment.Item = payments
 
 	return request, nil
 }
