@@ -1,19 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:clm="http://comarch.pl/loyalty/web/ws/clm">
-    <soapenv:Header/>
+    <soapenv:Header />
     <soapenv:Body>
         <clm:ProcessTransaction>
             <RequestData>
                 <type>R</type>
-                <partnerId>73</partnerId>
-                <locationCode>218</locationCode>
-                <terminalCode>1</terminalCode>
-                <transactionDate>200630111556</transactionDate>
+                <partnerId />
+                <locationCode>0055</locationCode>
+                <ruid>ee57c676-1439-11eb-adc1-0242ac120018</ruid>
+                <terminalCode>0</terminalCode>
+                <transactionDate>201110111516</transactionDate>
                 <receiptId>1</receiptId>
                 <online>true</online>
-                <cardno>7789005176445159</cardno>
-                <amount>200</amount>
-                <points_pbp>880</points_pbp>
-                <amount_pbp>1</amount_pbp>
+                <cardno>7789005118862490</cardno>
+                <cvv>162</cvv>
+                <amount>1400.00</amount>
+                <points_pbp>0</points_pbp>
+                <amount_pbp>0</amount_pbp>
                 <payment>
                     <item>
                         <type>loyaltyPoints</type>
@@ -21,25 +24,34 @@
                     </item>
                     <item>
                         <type>loyaltyDiscount</type>
-                        <amount>11</amount>
+                        <amount>100</amount>
                     </item>
                 </payment>
                 <products>
                     <item>
-                        <groupCode>0</groupCode>
-                        <code>200</code>
-                        <quantity>3.00</quantity>
-                        <amount>100.00</amount>
+                        <groupCode>1</groupCode>
+                        <code>2106295</code>
+                        <!--Водка БЕНАТОВСКАЯ 40% 0.75л, МРЦ 345-->
+                        <quantity>1.000</quantity>
+                        <amount>1000.00</amount>
                     </item>
                     <item>
-                        <groupCode>144</groupCode>
-                        <code>3490141</code>
-                        <quantity>1.00</quantity>
-                        <amount>100.00</amount>
+                        <groupCode>1</groupCode>
+                        <code>2106295</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>1.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>1</groupCode>
+                        <code>10259</code>
+                        <quantity>1.000</quantity>
+                        <amount>200.00</amount>
                     </item>
                 </products>
-                <pos_version>NQ</pos_version>
-                <ip_cash_desk>10.152.152.79</ip_cash_desk>
+                <pos_version>NQ</Pos_version>
+                <scan_type>0</scan_type>
+                <ip_cash_desk>10.152.152.180</ip_cash_desk>
             </RequestData>
         </clm:ProcessTransaction>
     </soapenv:Body>
