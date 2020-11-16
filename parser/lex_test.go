@@ -1,7 +1,8 @@
 package parser
 
 import (
-	"fmt"
+	"encoding/xml"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"testing"
 )
@@ -11,47 +12,15 @@ func TestLexer(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	cases := []struct {
-		name   string
-		result string
-	}{
-		{name:   "type", result: "R",},
-		{name:   "ip_cash_desk", result: "10.152.152.79",},
-		{name:   "pos_version", result: "NQ",},
-	}
-	for _, item := range cases {
-		t.Run(item.name, func(t *testing.T) {
-			item:=item
-			str := GetNewXml(bts, []byte(item.name))
-			if string(str) !=  item.result {
-//				t.Fatal(item.result,"not equal",string(str))
-			}
-
-		})
-	}
+	resp, err := RequestMock(bts)
+	assert.NoError(t, err)
+	assert.Equal(t, "R", resp.Data.Type)
+	assert.Equal(t, "1", resp.Data.ReceiptID)
+	assert.Equal(t, float64(200), resp.Data.Amount)
+	assert.Equal(t, "1", resp.Data.AmountPbp)
 }
 
-func TestLex2(t *testing.T) {
-	b, err := ioutil.ReadFile("../fixtures/request_R.xml")
-	if err != nil {
-		t.Fatal(err)
-	}
-	res := GetNewXml(b, []byte("type"))
-	fmt.Println(string(res))
-}
-
-func TestOld(t *testing.T) {
-	bts, err := ioutil.ReadFile("../fixtures/request_R.xml")
-	if err != nil {
-		t.Fatal(err)
-	}
-	elements := make(map[string]interface{})
-	str := GetFieldByNameFromXML(bts, "type")
-	elements["type"] = str
-	t.Log(str)
-}
-
-func BenchmarkOld(b *testing.B) {
+func BenchmarkLexer(b *testing.B) {
 	bts, err := ioutil.ReadFile("../fixtures/request_R.xml")
 	if err != nil {
 		b.Fatal(err)
@@ -59,17 +28,15 @@ func BenchmarkOld(b *testing.B) {
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			str := GetFieldByNameFromXML(bts, "ip_cash_desk")
-			b.StopTimer()
-			if "10.152.152.79" != str {
-			//	b.Fatal("error")
+			_, err := RequestMock(bts)
+			if err != nil {
+				b.Fatal(err)
 			}
-			b.StartTimer()
 		}
 	})
 }
 
-func BenchmarkNew(b *testing.B) {
+func BenchmarkXml(b *testing.B) {
 	bts, err := ioutil.ReadFile("../fixtures/request_R.xml")
 	if err != nil {
 		b.Fatal(err)
@@ -77,13 +44,11 @@ func BenchmarkNew(b *testing.B) {
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			res := GetNewXml(bts, []byte("ip_cash_desk"))
-			b.StopTimer()
-			if "10.152.152.79" != string(res) {
-			//	b.Fatal("error")
+			r := DiscountRequestXMLEnvelope{}
+			err := xml.Unmarshal(bts, &r)
+			if err != nil {
+				b.Fatal(err)
 			}
-			b.StartTimer()
 		}
 	})
 }
-

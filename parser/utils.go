@@ -51,10 +51,10 @@ func GetNewXml(b []byte, name []byte) []byte {
 }
 
 // RequestMock разбор xml с полями нужными mock сервису.
-func RequestMock(b []byte) (*SoapRequest, error) {
-	request := &SoapRequest{}
+func RequestMock(b []byte) (*DiscountRequestXMLEnvelope, error) {
+	request := &DiscountRequestXMLEnvelope{}
 	_, items := Lex(b)
-	var isType, isTransactionDate, isReceiptID, isPointsPbp, isAmount, isPayment, isAmountPbp bool
+	status := map[string]bool{}
 	for res := range items {
 		if res.Kind == TokenEOF {
 			break
@@ -62,55 +62,84 @@ func RequestMock(b []byte) (*SoapRequest, error) {
 		switch {
 		case res.Kind == StartElement:
 			switch string(res.Value) {
-			// amount_pbp
-			case "amount_pbp":
-				isAmountPbp = true
-			case "points_pbp":
-				isPointsPbp = true
-			case "amount":
-				isAmount = true
-			case "receiptId":
-				isReceiptID = true
-			case "transactionDate":
-				isTransactionDate = true
 			case "type":
-				isType = true
+				status["type"] = true
+			case "partnerId":
+				status["partnerId"] = true
+			case "locationCode":
+				status["locationCode"] = true
+			case "terminalCode":
+				status["terminalCode"] = true
+			case "transactionDate":
+				status["transactionDate"] = true
+			case "receiptId":
+				status["receiptId"] = true
+			case "cardno":
+				status["cardno"] = true
+			case "online":
+				status["online"] = true
+			case "amount":
+				status["amount"] = true
+			case "amount_pbp":
+				status["amount_pbp"] = true
+			case "points_pbp":
+				status["points_pbp"] = true
 			case "payment":
-				isPayment = true
+				status["payment"] = true
+			case "pos_version":
+				status["pos_version"] = true
+			case "ip_cash_desk":
+				status["ip_cash_desk"] = true
+			case "products":
+				status["products"] = true
 			}
 
 		case res.Kind == CharData:
 			switch {
-			case isPointsPbp:
-				isPointsPbp = false
-				n, err := strconv.ParseInt(string(res.Value), 10, 64)
-				if err != nil {
-					return nil, err
-				}
-				request.Data.PointsPbp = n
-			case isAmount && !isPayment:
-				isAmount = false
+			case status["type"] && !status["payment"]:
+				status["type"] = false
+				request.Data.Type = string(res.Value)
+			case status["partnerId"]:
+				status["partnerId"] = false
+				request.Data.PartnerId = string(res.Value)
+			case status["locationCode"]:
+				status["locationCode"] = false
+				request.Data.LocationCode = string(res.Value)
+			case status["terminalCode"]:
+				status["terminalCode"] = false
+				request.Data.TerminalCode = string(res.Value)
+			case status["transactionDate"]:
+				status["transactionDate"] = false
+				request.Data.TransactionDate = string(res.Value)
+			case status["receiptId"]:
+				status["receiptId"] = false
+				request.Data.ReceiptID = string(res.Value)
+			case status["cardno"]:
+				status["cardno"] = false
+				request.Data.Cardno = string(res.Value)
+			case status["online"]:
+				status["online"] = false
+				request.Data.Online = string(res.Value)
+			case status["amount_pbp"]:
+				status["amount_pbp"] = false
+				request.Data.AmountPbp = string(res.Value)
+			case status["points_pbp"]:
+				status["points_pbp"] = false
+				request.Data.PointsPbp = string(res.Value)
+			case status["pos_version"]:
+				status["pos_version"] = false
+				request.Data.PosVersion = string(res.Value)
+			case status["ip_cash_desk"]:
+				status["ip_cash_desk"] = false
+				request.Data.IpCashDesk = string(res.Value)
+			case status["amount"] && !status["payment"]:
+				status["amount"] = false
 				n, err := strconv.ParseFloat(string(res.Value), 64)
 				if err != nil {
 					return nil, err
 				}
 				request.Data.Amount = n
-			case isAmountPbp:
-				isAmountPbp = false
-				n, err := strconv.ParseFloat(string(res.Value), 64)
-				if err != nil {
-					return nil, err
-				}
-				request.Data.AmountPbp = n
-			case isReceiptID:
-				isReceiptID = false
-				request.Data.ReceiptID = string(res.Value)
-			case isTransactionDate:
-				isTransactionDate = false
-				request.Data.TransactionDate = string(res.Value)
-			case isType && !isPayment:
-				isType = false
-				request.Data.Type = string(res.Value)
+
 			}
 		}
 	}
