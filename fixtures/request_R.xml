@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:clm="http://comarch.pl/loyalty/web/ws/clm">
-    <soapenv:Header />
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:clm="http://comarch.pl/loyalty/web/ws/clm">
+    <soapenv:Header/>
     <soapenv:Body>
         <clm:ProcessTransaction>
             <RequestData>
                 <type>R</type>
-                <partnerId />
+                <partnerId>2</partnerId>
                 <locationCode>0055</locationCode>
                 <ruid>ee57c676-1439-11eb-adc1-0242ac120018</ruid>
                 <terminalCode>0</terminalCode>
                 <transactionDate>201110111516</transactionDate>
-                <receiptId>1</receiptId>
+                <receiptId>2</receiptId>
                 <online>true</online>
                 <cardno>7789005118862490</cardno>
                 <cvv>162</cvv>
                 <amount>1400.00</amount>
-                <points_pbp>0</points_pbp>
-                <amount_pbp>0</amount_pbp>
+                <points_pbp>880</points_pbp>
+                <amount_pbp>1</amount_pbp>
                 <payment>
                     <item>
                         <type>loyaltyPoints</type>
-                        <amount>100</amount>
+                        <amount>50</amount>
                     </item>
                     <item>
                         <type>loyaltyDiscount</type>
@@ -30,26 +31,146 @@
                 <products>
                     <item>
                         <groupCode>1</groupCode>
-                        <code>2106295</code>
-                        <!--Водка БЕНАТОВСКАЯ 40% 0.75л, МРЦ 345-->
-                        <quantity>1.000</quantity>
-                        <amount>1000.00</amount>
-                    </item>
-                    <item>
-                        <groupCode>1</groupCode>
-                        <code>2106295</code>
+                        <code>100000</code>
                         <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
                         <quantity>1.000</quantity>
+                        <amount>100.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
                         <amount>200.00</amount>
                     </item>
                     <item>
-                        <groupCode>1</groupCode>
-                        <code>10259</code>
-                        <quantity>1.000</quantity>
+                        <groupCode>3</groupCode>
+                        <code>300000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>3.000</quantity>
+                        <amount>300.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>4</groupCode>
+                        <code>400000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>4.000</quantity>
+                        <amount>400.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
+                        <amount>200.00</amount>
+                    </item>
+                    <item>
+                        <groupCode>2</groupCode>
+                        <code>200000</code>
+                        <!--СИГАРЕТЫ PARLIAMENT LIGHT ПАЧКА-->
+                        <quantity>2.000</quantity>
                         <amount>200.00</amount>
                     </item>
                 </products>
-                <pos_version>NQ</Pos_version>
+                <pos_version>NQ</pos_version>
                 <scan_type>0</scan_type>
                 <ip_cash_desk>10.152.152.180</ip_cash_desk>
             </RequestData>

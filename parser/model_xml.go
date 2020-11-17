@@ -20,13 +20,13 @@ type DiscountRequestXML struct {
 	Amount          float64 `xml:"amount"`
 	AmountPbp       string  `xml:"amount_pbp"`
 	PointsPbp       string  `xml:"points_pbp"`
-	Payment         struct {
-		Item []Payment `xml:"item"`
-	} `xml:"payment"`
-	Products struct {
+	Products        struct {
 		Text string                `xml:",chardata"`
 		Item []DiscountRequestItem `xml:"item"`
 	} `xml:"products"`
+	Payment struct {
+		Item []Payment `xml:"item"`
+	} `xml:"payment"`
 	PosVersion string `xml:"Pos_version"`
 	ScanType   string `xml:"scan_type"`
 	IpCashDesk string `xml:"ip_cash_desk"`
@@ -40,19 +40,4 @@ type DiscountRequestItem struct {
 	Code        string  `json:"code" xml:"code"`
 	Amount      float64 `json:"amount" xml:"amount"`
 	ProductInfo *Product
-}
-
-type Product struct {
-	Restricted  bool     `json:"restricted"` // является ли ограниченным (например, табаком)
-	Mrprice     int      `json:"mrprice"`    // мрц в копейках
-	ProductID   string   `json:"product_id"`
-	Description string   `json:"description"`
-	ParentCode  string   `json:"category_id"`
-	Segments    []string `json:"product_segment_id"`
-	Categories  []string `json:"categories"`
-}
-
-type Payment struct {
-	Type   string `xml:"type"`
-	Amount int    `xml:"amount"`
 }

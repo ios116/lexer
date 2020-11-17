@@ -24,7 +24,6 @@ func GetFieldByNameFromXML(b []byte, name string) (trTyp string) {
 			}
 		}
 	}
-
 	return trTyp
 }
 
@@ -51,12 +50,13 @@ func GetNewXml(b []byte, name []byte) []byte {
 }
 
 // RequestMock разбор xml с полями нужными mock сервису.
-func RequestMock(b []byte) (*DiscountRequestXMLEnvelope, error) {
-	request := &DiscountRequestXMLEnvelope{}
+func RequestMock(b []byte) (*DiscountRequest, error) {
+	request := &DiscountRequest{}
 	_, items := Lex(b)
 	payments := make([]Payment, 2)
-
+	products := make([]Product, 0, 0)
 	paymentCounter := -1
+	productCounter := -1
 	status := map[string]bool{}
 	for res := range items {
 		if res.Kind == TokenEOF {
@@ -68,6 +68,9 @@ func RequestMock(b []byte) (*DiscountRequestXMLEnvelope, error) {
 			case "item":
 				if status["payment"] {
 					paymentCounter += 1
+				} else if status["products"] {
+					productCounter += 1
+					products = append(products, Product{})
 				}
 				status["item"] = true
 			default:
@@ -79,49 +82,64 @@ func RequestMock(b []byte) (*DiscountRequestXMLEnvelope, error) {
 		case res.Kind == CharData:
 			switch {
 			case status["type"] && !status["payment"]:
-				request.Data.Type = string(res.Value)
+				request.Type = string(res.Value)
 			case status["partnerId"]:
-				request.Data.PartnerId = string(res.Value)
+				request.PartnerId = string(res.Value)
 			case status["locationCode"]:
-				request.Data.LocationCode = string(res.Value)
-			case status["terminalCode"]:
-				request.Data.TerminalCode = string(res.Value)
+				request.LocationCode = string(res.Value)
 			case status["transactionDate"]:
-				request.Data.TransactionDate = string(res.Value)
+				request.TransactionDate = string(res.Value)
 			case status["receiptId"]:
-				request.Data.ReceiptID = string(res.Value)
+				request.ReceiptID = string(res.Value)
 			case status["cardno"]:
-				request.Data.Cardno = string(res.Value)
-			case status["online"]:
-				request.Data.Online = string(res.Value)
+				request.Cardno = string(res.Value)
+				//
 			case status["amount"] && !status["payment"] && !status["products"]:
 				n, err := strconv.ParseFloat(string(res.Value), 64)
 				if err != nil {
 					return nil, err
 				}
-				request.Data.Amount = n
-
+				request.Amount = n
 			case status["payment"] && status["item"] && status["type"]:
 				payments[paymentCounter].Type = string(res.Value)
-
 			case status["payment"] && status["item"] && status["amount"]:
 				n, err := strconv.Atoi(string(res.Value))
 				if err != nil {
 					return nil, err
 				}
 				payments[paymentCounter].Amount = n
+
+			// парсинг продуктов
+			case status["products"] && status["item"] && status["code"]:
+				products[productCounter].Code = string(res.Value)
+			case status["products"] && status["item"] && status["groupCode"]:
+				products[productCounter].GroupCode = string(res.Value)
+			case status["products"] && status["item"] && status["quantity"]:
+				n, err := strconv.ParseFloat(string(res.Value), 64)
+				if err != nil {
+					return nil, err
+				}
+				products[productCounter].Quantity = n
+			case status["products"] && status["item"] && status["amount"]:
+				n, err := strconv.ParseFloat(string(res.Value), 64)
+				if err != nil {
+					return nil, err
+				}
+				products[productCounter].Amount = n
+
 			case status["amount_pbp"]:
-				request.Data.AmountPbp = string(res.Value)
+				request.AmountPbp = string(res.Value)
 			case status["points_pbp"]:
-				request.Data.PointsPbp = string(res.Value)
+				request.PointsPbp = string(res.Value)
 			case status["pos_version"]:
-				request.Data.PosVersion = string(res.Value)
+				request.PosVersion = string(res.Value)
 			case status["ip_cash_desk"]:
-				request.Data.IpCashDesk = string(res.Value)
+				request.IpCashDesk = string(res.Value)
 			}
 		}
 	}
-	request.Data.Payment.Item = payments
+	request.Payment = payments
+	request.Products = products
 
 	return request, nil
 }

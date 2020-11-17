@@ -2,7 +2,6 @@ package parser
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -15,16 +14,30 @@ func TestLexer(t *testing.T) {
 		t.Fatal(err)
 	}
 	resp, err := RequestMock(bts)
-
-	fmt.Printf("%+v", resp.Data.Payment)
+    assert.NoError(t,err)
 	assert.NoError(t, err)
-	assert.Equal(t, "R", resp.Data.Type)
-	assert.Equal(t, "1", resp.Data.ReceiptID)
-	assert.Equal(t, float64(200), resp.Data.Amount)
-	assert.Equal(t, "1", resp.Data.AmountPbp)
-	assert.Equal(t, "880", resp.Data.PointsPbp)
-	assert.Equal(t, "NQ", resp.Data.PosVersion)
-	assert.Equal(t, "10.152.152.79", resp.Data.IpCashDesk)
+	assert.Equal(t,20, len(resp.Products))
+	assert.Equal(t,2, len(resp.Payment))
+	assert.Equal(t, "R", resp.Type)
+	assert.Equal(t, "2", resp.ReceiptID)
+	assert.Equal(t, 1400.00, resp.Amount)
+	assert.Equal(t, "1", resp.AmountPbp)
+	assert.Equal(t, "880", resp.PointsPbp)
+
+}
+
+func TestXml(t *testing.T) {
+	bts, err := ioutil.ReadFile("../fixtures/request_R.xml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := DiscountRequestXMLEnvelope{}
+	err = xml.Unmarshal(bts, &r)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t,20,len(r.Data.Products.Item))
+	assert.Equal(t,2, len(r.Data.Payment.Item))
 }
 
 func BenchmarkLexer(b *testing.B) {
