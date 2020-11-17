@@ -16,7 +16,7 @@ func TestLexer(t *testing.T) {
 	resp, err := RequestMock(bts)
     assert.NoError(t,err)
 	assert.NoError(t, err)
-	assert.Equal(t,20, len(resp.Products))
+	assert.Equal(t,80, len(resp.Products))
 	assert.Equal(t,2, len(resp.Payment))
 	assert.Equal(t, "R", resp.Type)
 	assert.Equal(t, "2", resp.ReceiptID)
@@ -36,7 +36,7 @@ func TestXml(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t,20,len(r.Data.Products.Item))
+	assert.Equal(t,80,len(r.Data.Products.Item))
 	assert.Equal(t,2, len(r.Data.Payment.Item))
 }
 
